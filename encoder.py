@@ -4,8 +4,9 @@ class Encoder:
     def __init__(self, m, g_prime, t=1):
         self.g_prime = g_prime
         self.message = m
-        self.k = len(m)
-        self.n = len(g_prime)
+        (k, n) = g_prime.shape
+        self.k = k
+        self.n = n
         self.t = t
         self.z = self.generate_errors()
         self.encoded = self.encode()
@@ -19,7 +20,7 @@ class Encoder:
 
     def encode(self):
         c_prime = np.matmul(self.message, self.g_prime)
-        c = c_prime + self.z
+        c = np.bitwise_xor(c_prime, self.z)
         return c
 
     def get_message(self):
