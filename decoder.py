@@ -15,13 +15,12 @@ class decoder:
     def decrypt(self):
         P_inv = np.linalg.inv(self.P)
         S_inv = np.linalg.inv(self.S)
-        #c_prime = np.matmul(self.c, P_inv)
-        c_prime = self.c
+        c_prime = np.matmul(self.c, P_inv)
         m_prime = self.error_correction(c_prime)
         print("M_prime = " + str(m_prime))
         decrypted = np.matmul(m_prime, S_inv) % 2
-        #return decrypted
-        return m_prime
+        return decrypted
+
 
     def error_correction(self, c_prime):
         parity = np.matmul(c_prime, np.transpose(self.H)) % 2
@@ -30,14 +29,11 @@ class decoder:
         parity_total = 0
         for i in range(parity_bits):
             parity_total += 2**i * parity[i]
-            print("parity total for index " + str(i) + "=" + str(parity_total))
         if (int((parity_total - 1)) & int(parity_total)) == 0:
             return c_prime[0:(c_prime.size - parity_bits)]
         else:
             error_message = c_prime
-            print("error message is " + str(error_message))
-            error_bit = int(parity_total) - math.ceil(np.log2(parity_total)) - 1
-            print("error bit = " + str(error_bit))
+            error_bit = int(parity_total - math.ceil(np.log2(parity_total)) - 1)
             if error_message[error_bit] == 1:
                 error_message[error_bit] = 0
                 return error_message[0:(c_prime.size - parity_bits)]
