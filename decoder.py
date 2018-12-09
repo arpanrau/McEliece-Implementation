@@ -14,32 +14,37 @@ class decoder:
     def decrypt(self):
         P_inv = np.linalg.inv(self.P)
         S_inv = np.linalg.inv(self.S)
-        c_prime = np.matmul(self.c, P_inv)
-        m_prime = self.error_corection(c_prime)
+        #c_prime = np.matmul(self.c, P_inv)
+        c_prime = self.c
+        m_prime = self.error_correction(c_prime)
+        print("M_prime = " + str(m_prime))
         decrypted = np.matmul(m_prime, S_inv) % 2
-        return decrypted
+        #return decrypted
+        return m_prime
 
-    def error_corection(self, c_prime):
+    def error_correction(self, c_prime):
         parity = np.matmul(c_prime, np.transpose(self.H)) % 2
+        print("Parity Matrix =" + str(parity))
         parity_bits = np.ma.size(parity, 0)
         parity_total = 0
         for i in range(parity_bits):
-            index = c_prime.size + ((-1 * parity_bits) + i)
-            parity_total += 2**i * c_prime[index]
-            print(parity_total, index)
+            parity_total += 2**i * parity[-i-1] 
+            print("parity total for index " + str(i) + "=" + str(parity_total))
         if parity_total == 0:
             return c_prime[0:(c_prime.size - parity_bits)]
         else:
             error_message = c_prime
+            print("error message is " + str(error_message))
             error_bit = int(parity_total) - 1
+            print("error bit = " + str(error_bit))
             if error_message[error_bit] == 1:
                 error_message[error_bit] = 0
                 return error_message[0:(c_prime.size - parity_bits)]
             elif error_message[error_bit] == 0:
-                error_message[error_bit] = 1
-                return error_message[0:(c_prime.size - parity_bits)]
+                 error_message[error_bit] = 1
+                 return error_message[0:(c_prime.size - parity_bits)]
             else:
                 print("This code is broken")
 
     def is_correct(self):
-        return self.correct
+        return self.correct8

@@ -16,12 +16,12 @@ class Encoder:
         idx_list = np.random.choice(self.n, self.t, replace=False)
         for idx in idx_list:
             z[idx] = 1
+        print("z =" + str(z))
         return z
 
     def encode(self):
         c_prime = np.matmul(self.message, self.g_prime) % 2
         c = (c_prime + self.z) % 2
-        print(c, c_prime)
         return c
 
     def get_message(self):
