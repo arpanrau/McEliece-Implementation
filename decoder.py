@@ -1,4 +1,5 @@
 import numpy as np
+import math
 
 
 class decoder:
@@ -28,14 +29,14 @@ class decoder:
         parity_bits = np.ma.size(parity, 0)
         parity_total = 0
         for i in range(parity_bits):
-            parity_total += 2**i * parity[-i-1] 
+            parity_total += 2**i * parity[i]
             print("parity total for index " + str(i) + "=" + str(parity_total))
-        if parity_total == 0:
+        if (int((parity_total - 1)) & int(parity_total)) == 0:
             return c_prime[0:(c_prime.size - parity_bits)]
         else:
             error_message = c_prime
             print("error message is " + str(error_message))
-            error_bit = int(parity_total) - 1
+            error_bit = int(parity_total) - math.ceil(np.log2(parity_total)) - 1
             print("error bit = " + str(error_bit))
             if error_message[error_bit] == 1:
                 error_message[error_bit] = 0
