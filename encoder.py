@@ -19,8 +19,9 @@ class Encoder:
         return z
 
     def encode(self):
-        c_prime = np.matmul(self.message, self.g_prime)
-        c = np.bitwise_xor(c_prime, self.z)
+        c_prime = np.matmul(self.message, self.g_prime) % 2
+        c = (c_prime + self.z) % 2
+        print(c, c_prime)
         return c
 
     def get_message(self):

@@ -41,7 +41,3 @@ class hamming_keygen:
     def genPermuteMatrix(self):
         P = np.identity(self.n, dtype=np.uint)
         return P[np.random.permutation(self.n)]
-
-
-keys = hamming_keygen(3)
-print(keys.Gcarat)
