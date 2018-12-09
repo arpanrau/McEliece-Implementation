@@ -21,12 +21,26 @@ class decoder:
 
     def error_corection(self, c_prime):
         parity = np.matmul(c_prime, np.transpose(self.H))
-        if not np.all(parity == 0):
-            error_loc = 0
-            for i in range(self.n):
-                if ((i+1) & i) == 0:
-                    error_loc += 2**i
-            c_prime[error_loc] = !c_prime[error_loc]
+        parity_bits = np.ma.size(parity,0)
+        parity_total = 0
+        for i in range(parity_bits):
+            index = self.c_prime.size - ((-1*parity_bits - 1) + i)
+            parity_total += 2**index + self.c_prime[index]
+     if parity_total == 0:
+         return self.c_prime[0:(self.c_prime.size-parity_bits)]
+    else:
+        error_message = self.c_prime[0:(self.c_prime.size-parity_bits)]
+        if error_message[parity_total] == 1:
+            error_message[parity_total] = 0
+            return error_message
+        elif error_message[parity_total] == 0:
+            error_message[parity_total] = 1
+            return error_message
+        else:
+            print("This code is broken")
+
+
+
         pass  # remove parity bits and return
 
     def is_correct(self):
