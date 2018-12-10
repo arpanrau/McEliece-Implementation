@@ -1,6 +1,7 @@
 import numpy as np
 
 class Encoder:
+    '"Encodes a given message, m, using public key g_prime, by permuting and then adding errors to the message."'
     def __init__(self, m, g_prime, t=1):
         self.g_prime = g_prime
         self.message = m

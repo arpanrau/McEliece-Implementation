@@ -2,6 +2,7 @@ import numpy as np
 
 
 class hamming_keygen:
+    "Generates a public key for a message of size 2^kgen-1. Returns G^, the public key, as well as S G and P (Private Key Components)"
     def __init__(self, kgen):
         self.kgen = kgen
         self.k = 2**self.kgen - self.kgen -1
@@ -33,11 +34,13 @@ class hamming_keygen:
         return self.generator
 
     def genInvertibleMatrix(self):
+        "Generates S ,an invertible matrix of size K*l"
         S = np.random.randint(0,2,(self.k, self.k), dtype=np.uint)
         while np.linalg.det(S) == 0:
             S = np.random.randint(0,2,(self.k, self.k), dtype=np.uint)
         return S
 
     def genPermuteMatrix(self):
+        "Generates P, a random perumutation of the identity matrix"
         P = np.identity(self.n, dtype=np.uint)
         return P[np.random.permutation(self.n)]

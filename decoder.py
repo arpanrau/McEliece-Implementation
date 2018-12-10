@@ -1,3 +1,4 @@
+"""Runs the Mceliece Cryptosystem using hamming linear error codes"""
 import numpy as np
 import math
 
@@ -13,10 +14,11 @@ class decoder:
         self.correct = (self.m == self.decrypted)
 
     def decrypt(self):
+        "Decrypts a given message given the private key (S, G, and P)"
         P_inv = np.linalg.inv(self.P)
         S_inv = np.linalg.inv(self.S)
         c_prime = np.matmul(self.c, P_inv)
-        print("SG = " + str(c_prime))
+        print("Message * SG = " + str(c_prime))
         m_prime = self.error_correction(c_prime)
         print("Message * S = " + str(m_prime))
         decrypted = np.matmul(m_prime, S_inv) % 2
@@ -24,6 +26,7 @@ class decoder:
 
 
     def error_correction(self, c_prime):
+        "Finds the error based on the calculated parity matrix, and flips that bit."
         parity = np.matmul(c_prime, np.transpose(self.H)) % 2
         print("Parity Matrix =" + str(parity))
         parity_bits = np.ma.size(parity, 0)
