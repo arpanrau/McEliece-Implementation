@@ -16,8 +16,9 @@ class decoder:
         P_inv = np.linalg.inv(self.P)
         S_inv = np.linalg.inv(self.S)
         c_prime = np.matmul(self.c, P_inv)
+        print("SG = " + str(c_prime))
         m_prime = self.error_correction(c_prime)
-        print("M_prime = " + str(m_prime))
+        print("Message * S = " + str(m_prime))
         decrypted = np.matmul(m_prime, S_inv) % 2
         return decrypted
 

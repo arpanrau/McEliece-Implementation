@@ -12,16 +12,15 @@ class Encoder:
         self.encoded = self.encode()
 
     def generate_errors(self):
-        z = np.zeros(self.n)
+        self.z = np.zeros(self.n)
         idx_list = np.random.choice(self.n, self.t, replace=False)
         for idx in idx_list:
-            z[idx] = 1
-        print("z =" + str(z))
-        return z
+            self.z[idx] = 1
+        return self.z
 
     def encode(self):
-        c_prime = np.matmul(self.message, self.g_prime) % 2
-        c = (c_prime + self.z) % 2
+        self.c_prime = np.matmul(self.message, self.g_prime) % 2
+        c = (self.c_prime + self.z) % 2
         return c
 
     def get_message(self):
