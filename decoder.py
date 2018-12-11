@@ -18,7 +18,7 @@ class decoder:
         P_inv = np.linalg.inv(self.P)
         S_inv = np.linalg.inv(self.S)
         c_prime = np.matmul(self.c, P_inv)
-        print("Message * SG = " + str(c_prime))
+        print("Message * SG + z = " + str(c_prime))
         m_prime = self.error_correction(c_prime)
         print("Message * S = " + str(m_prime))
         decrypted = np.matmul(m_prime, S_inv) % 2
@@ -28,13 +28,16 @@ class decoder:
     def error_correction(self, c_prime):
         "Finds the error based on the calculated parity matrix, and flips that bit."
         parity = np.matmul(c_prime, np.transpose(self.H)) % 2
-        print("Parity Matrix =" + str(parity))
+        print("Syndrome =" + str(parity))
         parity_bits = np.ma.size(parity, 0)
         parity_total = 0
+        #Calculate Syndrome (From binary representation to integer)
         for i in range(parity_bits):
             parity_total += 2**i * parity[i]
+        #if no errors, return the message
         if (int((parity_total - 1)) & int(parity_total)) == 0:
             return c_prime[0:(c_prime.size - parity_bits)]
+        #otherwise, flip the bit with an error in it. Note math.ceil(np.log2(parity_total)-1) is to switch from standard form.
         else:
             error_message = c_prime
             error_bit = int(parity_total - math.ceil(np.log2(parity_total)) - 1)
